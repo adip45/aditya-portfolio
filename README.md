@@ -1,39 +1,68 @@
-<<<<<<< HEAD
-# Aditya Patil — Developer Portfolio
+<div align="center">
 
-A production-quality personal portfolio for **Aditya Patil**, second-year B.Tech Computer
-Engineering student at PICT Pune. Built as a static Next.js site: dark editorial design,
-restrained animation, one featured project documented as a full case study.
+# Aditya Patil — Portfolio
 
-Live routes:
+**A static Next.js portfolio for a second-year Computer Engineering student at PICT Pune.**
+Dark editorial design, restrained motion, and real projects documented honestly.
 
-| Route | What it is |
-| --- | --- |
-| `/` | Homepage — hero, about, journey, featured project, skills, current focus, contact |
-| `/projects/hostelconnect` | Deep case study of the HostelConnect platform |
-| `/sitemap.xml`, `/robots.txt` | SEO plumbing, generated from `content/site.ts` |
+[![Next.js](https://img.shields.io/badge/Next.js-15.5-000?logo=nextdotjs&logoColor=fff)](https://nextjs.org)
+[![React](https://img.shields.io/badge/React-19-087EA4?logo=react&logoColor=fff)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=fff)](https://www.typescriptlang.org)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-06B6D4?logo=tailwindcss&logoColor=fff)](https://tailwindcss.com)
+[![Static export](https://img.shields.io/badge/output-static-2ea043)](#deployment)
+
+</div>
 
 ---
 
-## 1. Run it
+## Quick start
 
 ```bash
 npm install
-npm run dev      # http://localhost:3000
-npm run build    # static production build
-npm start        # serve the build
-npm run typecheck
+npm run dev        # http://localhost:3000
 ```
 
-Requires Node 18.18+ (tested on Node 20). No environment variables, no database,
-no external services — the whole site is prerendered.
+That's it. No database, no API keys, no environment variables required. Every
+route is prerendered at build time.
+
+| Script | What it does |
+| --- | --- |
+| `npm run dev` | Dev server on `0.0.0.0:3000` |
+| `npm run build` | Production build (prerenders all routes) |
+| `npm start` | Serve the production build |
+| `npm run export` | Static `out/` folder for any plain-file host |
+| `npm run typecheck` | `tsc --noEmit` |
+| `npm run lint` | `next lint` — **needs one-time ESLint setup on first run** |
+
+Node 20+ recommended.
 
 ---
 
-## 2. Update your details — one file
+## Routes
 
-Everything personal lives in **`content/site.ts`**. Contact channels are
-defined once and consumed everywhere:
+| Route | What it is |
+| --- | --- |
+| `/` | Homepage — hero, about, journey, projects, skills, focus, contact |
+| `/projects/hostelconnect` | HostelConnect case study |
+| `/projects/towers-of-hanoi` | Towers of Hanoi case study |
+| `/projects/sih-2026` | Nirmān (SIH 2026) case study |
+| `/sitemap.xml` · `/robots.txt` | Generated from `content/` |
+| anything else | Styled 404 |
+
+The three case-study URLs are prerendered from `content/projects.ts` via
+`generateStaticParams`. `/projects/hostelconnect` also exists as its own static
+route so the original URL keeps resolving independently of the dynamic one.
+
+---
+
+## Editing content
+
+Two files hold **everything**. No component needs to be touched to change content.
+
+### `content/site.ts` — personal details
+
+Identity, hero copy, links, skills, tools, and the achievements list are all
+exported from here.
 
 ```ts
 export const links = {
@@ -43,240 +72,334 @@ export const links = {
   linkedinHandle: "aditya-patil-ap001",
   email: "adyspatil@gmail.com",
   hostelConnectRepo: "https://github.com/adip45/HostelConnect",
-};
+} as const;
 ```
 
-Derived helpers (`mailto`, `githubUrl`, `linkedinUrl`, `emailDisplay`) are
-exported alongside it, and `hasEmail` / `hasLinkedIn` gate any UI that should
-only appear when a value is real. Change a URL here and it updates the hero,
-the contact cards, the footer, the mobile menu and the JSON-LD block at once.
+Derived helpers (`mailto`, `githubUrl`, `linkedinUrl`, `emailDisplay`) sit
+alongside it, and `hasEmail` / `hasLinkedIn` gate any UI that should only appear
+when a value is real — so an empty string hides the element instead of shipping a
+dead link. Change a URL once and the hero, contact cards, footer, mobile menu and
+`Person` JSON-LD all follow.
 
-The three contact cards are declared in `contact.cards`; each entry names an
-icon, a value, and the action label shown on its button.
+The hero headline uses a segmented shape so the serif accent can sit mid-sentence
+without splitting the copy into separate strings:
 
-> **Note on attribution.** HostelConnect is a collaborative team project and
-> the linked repository is a working fork. The site states this on the project
-> card and at the top of the case study rather than implying solo authorship.
+```ts
+headline: { lead: "I turn ideas into ", em: "software", join: " that ", em2: "solves", tail: " problems." }
+```
 
-## 3. Project structure
+### `content/projects.ts` — every project, one object each
+
+This is the single source of truth for the showcase **and** the case studies.
+Adding a fourth project is one object — the card, the route, the metadata and the
+sitemap entry all follow automatically.
+
+```ts
+export const projects: Project[] = [
+  {
+    slug: "towers-of-hanoi",        // → /projects/towers-of-hanoi
+    index: "02",
+    name: "Towers of Hanoi",
+    tagline: "Interactive recursion & stack visualiser",
+    status: "Live",                 // "Live" | "Complete" | "In progress"
+    repo: "https://github.com/adip45/towers-of-hanoi-simulator",
+    demo: "https://adip45.github.io/towers-of-hanoi-simulator/", // omit if not live
+    screenshots: [
+      { src: "/projects/towers-of-hanoi.png", kind: "capture", alt: "…", caption: "…" },
+    ],
+    // …summary, lead, stack, highlights, problem, objective,
+    //   features, workflow, architecture, scopeNote
+  },
+];
+```
+
+**Two fields carry honesty guarantees — don't guess at them:**
+
+- **`demo`** — only set it when you have loaded the deployment and it works. There
+  is no fallback UI; the Live Demo button simply doesn't render without it.
+- **`screenshots[].kind`** — `"capture"` for a real screenshot of the running
+  product, `"reconstructed"` for anything redrawn by hand. The badge on the card
+  and the caption in the case study are both derived from this value, so a mock
+  cannot be accidentally presented as a capture.
+
+`upstream` is optional and, when set, renders a "Team fork" marker plus a
+"Forked from" row in the case study — used for the two collaborative repos.
+
+---
+
+## Project structure
 
 ```
 app/
-├── layout.tsx                  # fonts, metadata, Person JSON-LD, header + footer
-├── page.tsx                    # homepage composition (order of sections)
-├── globals.css                 # design tokens, utility classes, reduced-motion rules
-├── projects/hostelconnect/     # the case study route
-├── icon.svg  opengraph-image.png  not-found.tsx  sitemap.ts  robots.ts
+├── layout.tsx                 # fonts, metadata, Person JSON-LD, header + footer
+├── page.tsx                   # homepage composition
+├── globals.css                # design tokens, type roles, motion rules
+├── projects/[slug]/page.tsx   # all case studies (generateStaticParams)
+├── projects/hostelconnect/    # preserved static route, same template
+├── icon.svg · opengraph-image.png · not-found.tsx · sitemap.ts · robots.ts
 components/
-├── ui/                         # header, footer, scroll progress, reveal primitives,
-│                               # page transition, section heading, hero diagram,
-│                               # cursor-glow (interactive ambient light)
-├── sections/                   # hero, about, journey, projects, skills, focus,
-│                               # achievements (conditional), contact
-├── previews/                   # reconstructed HostelConnect UI panels
-└── case-study/                 # reserved for case-study-only pieces
+├── ui/                        # header, footer, reveal, surfaces, hero-stack,
+│                              # project-card, skill-accordion, cursor-glow
+├── sections/                  # hero, about, journey, projects, skills, focus,
+│                              # achievements (conditional), contact, case-study
 content/
-├── site.ts                     # ← all personal content lives here
-└── project.ts                  # ← case study content, verified against the repo
+├── site.ts                    # ← personal content
+└── projects.ts                # ← all project + case-study content
 lib/
-├── hooks.ts                    # scroll, active section, body lock, pointer spotlight
-└── utils.ts                    # cn(), external link props
+├── hooks.ts                   # scroll, active section, body lock, pointer spotlight
+└── utils.ts                   # cn(), asset(), external link props
+scripts/
+└── verify-hydration.js        # 46 headless-browser assertions
 ```
 
 ---
 
-## 4. Design system
+## Design system
 
-All tokens live in `app/globals.css` (`:root`) and mirror `tailwind.config.ts`.
+Tokens live in `app/globals.css` (`:root`) and mirror `tailwind.config.ts`.
 
 | Token | Value | Use |
 | --- | --- | --- |
 | `--ink` | `#0a0b0d` | page background |
-| `--ink-850/800` | `#0d0f12` / `#111316` | raised surfaces |
+| `--ink-950 / 850 / 800` | `#07080a` / `#0d0f12` / `#111316` | depth, raised surfaces |
 | `--bone` | `#f2efe9` | primary type |
-| `--bone-mute` / `--bone-faint` | `#8b8983` / `#7d7b76` | secondary / tertiary type (both ≥ 4.5:1 on every surface) |
+| `--bone-dim` / `-mute` / `-faint` | `#b9b6b0` / `#8b8983` / `#7d7b76` | descending emphasis |
 | `--signal` | `#4f9dff` | the single accent |
-| `--hairline` | `rgba(242,239,233,0.09)` | every border on the site |
+| `--hairline` | `rgba(242,239,233,0.09)` | every border |
 
-Typography: **Geist** (UI + editorial), **Instrument Serif italic** (the accent voice on
-headline phrases), **JetBrains Mono** (labels, data, code). Each is wired through
-`next/font`, so there are no network font requests at runtime.
+`--bone-faint` was tuned to clear 4.5:1 on all three surfaces (4.66 on ink, 4.54
+on ink-850, 4.74 on ink-950). If you darken it further, recheck contrast.
+
+**Type:** Geist (UI + editorial), Instrument Serif italic (accent phrases),
+JetBrains Mono (labels, data). All loaded through `next/font` — zero runtime
+network requests, no layout shift.
 
 ### Type roles
 
-Four roles cover every heading on the site. They are defined once in
-`globals.css` and applied via `.type-display`, `.type-section`,
-`.type-statement` and `.type-card`, so a heading can never drift out of the
-scale. Tracking tightens as size grows (optical sizing) while weight stays at
-500 throughout — the hierarchy comes from size, tracking and colour, not from
-stacking bold on bold.
+Five roles cover every heading; they're defined once and applied by class so a
+heading can't drift off-scale. Hierarchy comes from size, tracking and colour —
+weight stays at 500 throughout, never bold-on-bold.
 
 | Role | Size | Used by |
 | --- | --- | --- |
-| `--text-display` | `clamp(3.25rem, 8.6vw, 8rem)` | the name, the featured project |
-| `--text-section` | `clamp(1.95rem, 3.9vw, 3.15rem)` | every section heading |
-| `--text-statement` | `clamp(1.5rem, 2.7vw, 2.15rem)` | pull-quotes, lead paragraphs |
-| `--text-card` | `clamp(1.05rem, 1.5vw, 1.2rem)` | card and row titles |
+| `.type-display` | `clamp(3.25rem, 8.6vw, 8rem)` | the name in the hero |
+| `.type-section` | `clamp(1.95rem, 3.9vw, 3.15rem)` | section headings |
+| `.type-statement` | `clamp(1.5rem, 2.7vw, 2.15rem)` | lead paragraphs, card titles |
+| `.type-card` | `clamp(1.05rem, 1.5vw, 1.2rem)` | row and panel titles |
+| `.type-body` / `.type-meta` | 0.9375rem / 0.625rem mono | body copy / metadata |
 
-`.type-body` sets the measured body copy, and `.type-meta` the mono metadata —
-the deliberate counterweight that gives large type something to push against.
-
-### Vertical rhythm
-
-`.section-lg` / `.section-md` map to `--space-section-lg` / `--space-section-md`.
-Sections alternate between them, so scrolling has a pulse rather than a
-metronome. `components/ui/surface.tsx` exposes `<Section>`, which owns this
-rhythm plus the divider.
-
-### Surfaces
+### Surfaces and rhythm
 
 `.surface` and `.surface-raised` replace flat bordered boxes with three light
-cues: a top hairline highlight, an inset shadow, and a soft cast shadow.
-`<TiltSurface>` adds a pointer-tracked sheen and a ±1.2° tilt — small enough to
-read as physical depth, never as a wobble. Both are switched off for touch and
-reduced-motion visitors.
+cues: a top hairline highlight, an inset shadow, a soft cast shadow.
+`<TiltSurface>` adds a pointer-tracked sheen and a ±1.2° tilt — enough to read as
+physical depth, never as a wobble. Both are disabled for touch and reduced motion.
 
-Other utility classes worth knowing:
+`.section-lg` / `.section-md` alternate down the homepage so scrolling has a pulse
+rather than a metronome; `<Section>` owns that rhythm plus the divider.
 
-- `.shell` — the page container (84rem, responsive gutters)
-- `.kicker` — mono eyebrow with a signal-coloured lead-in rule
-- `.grid-field` — the fine two-density lattice in the hero
-- `.ambient-light__lattice` — the page-wide lattice, painted *inside* the light
-  stack so the cursor glow illuminates it
-- `.accent-serif` — italic serif emphasis
-- `.link-underline`, `.lift` — interaction treatments
+Other utilities worth knowing: `.shell` (84rem container), `.kicker` (mono
+eyebrow with signal rule), `.grid-field` (two-density lattice), `.accent-serif`
+(italic emphasis), `.link-underline`, `.lift`.
 
 ---
 
-## 5. Interactive ambient light
-
-A fixed lighting layer (`components/ui/cursor-glow.tsx`) makes the background glow
-softly around the cursor. It is mounted once in `app/layout.tsx` via `<CursorGlow />`,
-so it covers every route including the case study.
-
-**How it is built** — three stacked layers in `app/globals.css`:
-
-| Layer | Effect |
-| --- | --- |
-| `.ambient-light__field` | Wide, very soft bloom (radius ≈ 2.1× `--glow-r`) |
-| `.ambient-light__core` | Brighter pool directly under the cursor |
-| `.ambient-light__grid` | The same 72px lattice as `.grid-field`, in signal blue, **masked to the glow** so lines light up only as it passes |
-
-**Performance.** The pointer position is written straight to the CSS custom
-properties `--glow-x` / `--glow-y` (plus one opacity value) inside a
-`requestAnimationFrame` loop — **no React state, so zero re-renders while moving.**
-The loop parks itself as soon as the glow settles, and is cancelled entirely while
-the tab is hidden. Easing is delta-time corrected, so the feel is identical at
-60/90/120 Hz.
-
-**Stacking.** The layer sits at `z-index: 0`; `header`, `main` and `footer` are lifted
-to `z-index: 1` so their opaque backgrounds paint *above* the light while the page
-background shows through it. It is `pointer-events: none` and `aria-hidden`, so it
-never intercepts clicks — verified by hit-testing every link and button on the page.
-
-**Fallbacks.** Touch/coarse pointers and `prefers-reduced-motion: reduce` get a
-single calm static pool instead of a tracking glow (`data-mode="static"`), which also
-avoids touching the battery on mobile.
-
-### Hydration safety in the hero diagram
-
-`components/ui/hero-diagram.tsx` computes polar coordinates at render time, which makes
-it a hydration risk in two specific ways — both are fixed and worth preserving:
-
-1. **Trig output is not bit-identical across engines.** `Math.sin` / `Math.cos` are not
-   required to be correctly rounded, so Node serialised `y1="439.8410477655294"` where
-   the browser produced `439.84104776552937`. React compares the serialised strings and
-   reported a mismatch. **All coordinates now pass through `rnd()` (3 decimal places)**
-   before reaching the DOM, so both sides emit identical bytes. Never render raw
-   `Math.cos()` output into an attribute.
-
-2. **Never pass `animate={undefined}` to a `motion.*` element.** Framer Motion then
-   writes literal `opacity="undefined"` / `transform="…undefined…"` onto the node. The
-   reduced-motion branches used to do this; they now pass explicit values
-   (`animate={reduced ? { rotate: 0 } : { rotate: 360 }}`) and let the transition's
-   `duration: 0` disable the motion instead.
-
-Verify with the bundled script (it needs the dev server running and Playwright
-available):
-
-```bash
-npm run dev            # in one shell
-node scripts/verify-hydration.js
-```
-
-It asserts zero hydration warnings on every route and that the SSR markup and the
-hydrated client markup are byte-for-byte identical.
-
-> Two gotchas encoded in the CSS, worth keeping in mind before editing it:
-> 1. `radial-gradient(circle 600px at …)` is **invalid** CSS — one length is not a
->    valid shape size. If a mask uses it, the whole `mask-image` is dropped and the
->    layer renders unmasked, edge to edge. The grid mask therefore uses an explicit
->    `ellipse <r> <r>` size.
-> 2. Painting the field as a *tiled* background (`background-size` + `background-position`)
->    leaves a visible rectangular tile edge on large viewports. It is a single
->    full-viewport gradient instead.
-
----
-
-## 6. Motion
+## Motion
 
 Framer Motion, used sparingly:
 
-- `Reveal` / `RevealGroup` / `RevealItem` (`components/ui/reveal.tsx`) — scroll-triggered
-  entrances with stagger. They animate `opacity` and the `transform` **property**
-  (not `x`/`y` shorthands) so no leftover `translate` stays on the element box.
-- `HeroDiagram` — SVG instrument: rotating dashed ring, orbiting signal, breathing nodes.
-- `PageTransition` — route-level fade/lift keyed on pathname.
-- Pointer spotlights on project and focus cards (`useSpotlight`) — mouse only.
+- `Reveal` / `RevealGroup` / `RevealItem` — scroll entrances with stagger. They
+  animate `opacity` and the `transform` **property** (not `x`/`y` shorthands) so no
+  leftover `translate` stays on the element box.
+- `HeroStack` — eight CSS-3D planes plus a CSS keyframe drift. No canvas, no
+  images, no random values.
+- `PageTransition` — route-level fade keyed on pathname.
+- Pointer spotlights on project and focus cards — mouse only.
 
-**Reduced motion**: `prefers-reduced-motion: reduce` collapses every transition and
-animation in `globals.css`, and each component checks `useReducedMotion()` so content
-appears without movement. Verified that all sections remain at `opacity: 1`.
+**Reduced motion** is honoured twice over: `globals.css` collapses every transition
+and animation under `prefers-reduced-motion: reduce`, and each component checks
+`useReducedMotion()` so content renders in place with no movement. The verify
+script asserts sections land at `opacity: 1` in that mode.
 
 ---
 
-## 7. Accessibility & SEO
+## Interactive ambient light
 
-- Semantic landmarks (`header`, `main`, `nav`, `footer`), one `h1` per page, ordered headings
-- Visible focus rings, a skip link, `aria-current` on the active nav item
-- `aria-expanded` / `aria-controls` on the mobile menu; `Escape` closes it; scroll lock
-- Every icon-only control has an `aria-label`; decorative SVGs are `aria-hidden`
+`components/ui/cursor-glow.tsx` mounts once in the layout, so it covers every
+route including case studies. Three stacked layers:
+
+| Layer | Effect |
+| --- | --- |
+| `.ambient-light__field` | wide, very soft bloom |
+| `.ambient-light__core` | brighter pool under the cursor |
+| `.ambient-light__grid` | the `.grid-field` lattice, in signal blue, **masked to the glow** |
+
+**Performance.** Pointer position is written straight to `--glow-x` / `--glow-y`
+inside a `requestAnimationFrame` loop — **no React state, so zero re-renders while
+moving.** The loop parks when the glow settles and cancels while the tab is
+hidden. Easing is delta-time corrected, so it feels identical at 60/90/120 Hz.
+
+**Stacking.** The layer sits at `z-index: 0`, `pointer-events: none`,
+`aria-hidden`; `header`/`main`/`footer` are lifted to `z-index: 1` so their opaque
+backgrounds paint above it. It can never intercept a click.
+
+**Fallbacks.** Coarse pointers and reduced-motion get one calm static pool
+(`data-mode="static"`) instead of a tracking glow.
+
+> **Two CSS traps encoded here** — worth knowing before editing:
+> 1. `radial-gradient(circle 600px at …)` is **invalid** CSS; one length is not a
+>    valid shape size. If a mask uses it the whole `mask-image` is dropped and the
+>    layer renders unmasked, edge to edge. The grid mask uses an explicit
+>    `ellipse <r> <r>`.
+> 2. Painting the field as a *tiled* background leaves a visible rectangular seam
+>    on large viewports. It is one full-viewport gradient instead.
+
+---
+
+## Correctness guarantees
+
+### Hydration
+
+`HeroStack` is deliberately built from plain divs with no `Math.sin`/`cos`, so
+server and client serialise identical bytes. Two rules are held everywhere:
+
+1. **Never render raw float math into an attribute.** `Math.sin` / `Math.cos` are
+   not required to be bit-identical across engines — Node once emitted
+   `439.8410477655294` where Chrome produced `439.84104776552937`. Round any such
+   value (3 dp) before it reaches the DOM.
+2. **Never pass `animate={undefined}` to a `motion.*` element.** Framer Motion then
+   writes literal `opacity="undefined"` onto the node. Use explicit values and
+   disable movement via the transition (`duration: 0`) instead.
+
+### Verification
+
+```bash
+npm run build && npm start        # or: npm run export && npx serve out
+node scripts/verify-hydration.js
+```
+
+46 assertions across four routes, covering:
+
+| # | Checks |
+| --- | --- |
+| 1 | Zero hydration warnings and console errors per route |
+| 2 | SSR markup === hydrated markup, byte for byte |
+| 3 | Reduced-motion settles the hero stack instead of animating |
+| 4–5 | Hero composition and copy match the brief |
+| 6 | All three project cards render previews, CTAs and correct badges |
+| 7 | Every case-study route returns 200 with seven chapters and no overflow |
+| 8 | Unknown slug returns 404 |
+
+Point it at a deployed URL — it checks more than "does it load":
+
+```bash
+BASE=https://aditya-patil.is-a.dev node scripts/verify-hydration.js
+```
+
+**Requires a local Playwright install** — it is intentionally not a project
+dependency, so `npm install` stays lean. If the script can't resolve
+`playwright-core`, install it globally or point the `require` at an existing
+install. It never ships to the browser.
+
+---
+
+## Accessibility & SEO
+
+- Semantic landmarks, one `h1` per page, ordered headings
+- Visible focus rings, skip link, `aria-current` on the active nav item
+- `aria-expanded` / `aria-controls` on the mobile menu; `Escape` closes; scroll lock
+- Every icon-only control has an `aria-label`; decorative SVG is `aria-hidden`
 - External links use `target="_blank"` with `rel="noopener noreferrer"`
-- Metadata: title template, description, canonical, Open Graph + Twitter card (PNG
-  generated to match the site), `Person` JSON-LD, sitemap and robots
-- `html` `lang="en"`, `color-scheme: dark`, theme colour
+- Metadata: title template, description, canonical, Open Graph + Twitter card,
+  `Person` JSON-LD, sitemap, robots
+- `lang="en"`, `color-scheme: dark`, theme colour
 
 ---
 
-## 8. About the HostelConnect case study
+## Honesty rules
 
-Every technical claim in `content/project.ts` was verified against the repository
-(`prisma/schema.prisma`, `app/actions/booking.ts`, `app/actions/hostel.ts`,
-`app/dashboard/*`, `middleware.ts`, `lib/auth.ts`) — the four-model schema, the
-`PENDING → APPROVED/REJECTED` lifecycle, the atomic bed decrement/restore inside
-`prisma.$transaction`, the review gating on approved bookings, and role-based
-middleware.
+These are enforced by the data model, not by good intentions:
 
-Two honesty rules are baked in:
-
-1. **No invented deployment.** There is no live-demo button; only the GitHub repository.
-2. **No screenshots exist in the repo**, so the UI panels are labelled
-   *"Reconstructed UI"* with a note explaining they are faithful renderings of the
-   real screens, not captures. Sample property names and prices inside them are
-   illustrative demo data.
-
-If you later add real screenshots, drop them in `public/hostelconnect/` and swap the
-`PreviewFigure` children for `next/image` — the surrounding labels already distinguish
-the two states.
+1. **No invented deployments.** `demo` is set only for URLs that were loaded and
+   returned 200. HostelConnect has no live site, so it has no Live Demo button.
+2. **No fake screenshots.** `kind: "capture"` means a real capture of the running
+   product. The two HostelConnect panels are `"reconstructed"` and are labelled as
+   such in the UI — they're faithful redrawings of real screens, not captures, and
+   the sample data inside them is illustrative.
+3. **No invented stats.** No commit counts, star counts, user counts or
+   performance numbers appear anywhere.
+4. **Collaboration is stated.** HostelConnect and SIH-2026 are forks; the site says
+   so on the card, in the fact panel, and in the contribution text. HostelConnect's
+   contribution line names the specific area worked on rather than implying
+   ownership of the whole codebase.
 
 ---
 
-## 9. Deploy
+## Deployment
 
-The site is fully static (`next build` prerenders every route). Deploy to Vercel,
-Netlify, Cloudflare Pages or any static host. Remember to update `site.url` first so
-canonical URLs, the sitemap and social cards point at the real domain.
-=======
-# aditya-portfolio
-Personal developer portfolio website built with Next.js.
->>>>>>> fca5999ca4dcb8b40c5662fc12105c11f7f7b3c7
+Fully static — `next build` prerenders every route. No server needed.
+
+**One env var controls the canonical domain.** Set it in your host's dashboard:
+
+```
+NEXT_PUBLIC_SITE_URL=https://your-domain-here
+```
+
+It feeds `metadataBase`, canonical tags, `sitemap.xml`, `robots.txt` and every
+OpenGraph URL. There is nothing else to change — don't hardcode a domain in a
+component.
+
+### Vercel (recommended)
+
+Import the repo, add `NEXT_PUBLIC_SITE_URL`, deploy. Every push to `main`
+redeploys. Custom domains are handled in **Settings → Domains**, with TLS issued
+automatically.
+
+### GitHub Pages / any static host
+
+```bash
+npm run export          # writes out/
+```
+
+A ready-made workflow is at `.github/workflows/deploy-pages.yml` (enable
+**Settings → Pages → Source: GitHub Actions**). If the site is served from a
+subpath such as `https://user.github.io/repo/`, also set:
+
+```
+NEXT_PUBLIC_BASE_PATH=/repo
+```
+
+> **Subpath gotcha:** Next.js rewrites `_next/*` assets for `basePath` but **not**
+> plain string `src` values pointing at `public/` files. Any image path held in
+> content data must go through `asset()` from `lib/utils.ts`, or it 404s on a
+> subpath deployment. Both image components already do.
+
+### Free custom domain
+
+`.is-a.dev` subdomains (forever free, via GitHub PR) and the GitHub Student Pack
+(`.dev` free for a year) are both documented in **[`FREE-DOMAIN.md`](./FREE-DOMAIN.md)**.
+Full hosting walkthroughs are in **[`DEPLOY.md`](./DEPLOY.md)**.
+
+---
+
+## Design notes
+
+A few decisions that look like details but aren't:
+
+- **Reading order matches build order.** "Data → Logic → Interface" in the hero
+  traces the request path of a full-stack app. The layout describes the work.
+- **The hero visual is not a screenshot.** It's a CSS-3D exploded architecture
+  diagram, marked `aria-hidden`; the legend beneath it carries the meaning as real
+  text, so the content survives without the illustration.
+- **One accent colour.** Signal blue is the only chromatic value in the interface;
+  everything else is ink and bone. Status badges (live / in progress) are the one
+  place a second hue is allowed, because state should be instantly legible.
+- **Equal weight for projects.** Every project renders through the same
+  `<ProjectCard>` at the same scale. The lead project differs only in title size
+  and column split — nothing is demoted to a small card.
+
+---
+
+<div align="center">
+<sub>Built by <a href="https://github.com/adip45">Aditya Patil</a> · Next.js · TypeScript · Tailwind CSS · Framer Motion</sub>
+</div>
