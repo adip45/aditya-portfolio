@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Aditya Patil — Developer Portfolio
 
 A production-quality personal portfolio for **Aditya Patil**, second-year B.Tech Computer
@@ -275,3 +276,7 @@ the two states.
 The site is fully static (`next build` prerenders every route). Deploy to Vercel,
 Netlify, Cloudflare Pages or any static host. Remember to update `site.url` first so
 canonical URLs, the sitemap and social cards point at the real domain.
+=======
+# aditya-portfolio
+Personal developer portfolio website built with Next.js.
+>>>>>>> fca5999ca4dcb8b40c5662fc12105c11f7f7b3c7
