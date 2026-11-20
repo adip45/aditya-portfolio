@@ -1,0 +1,960 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ------------------------------------------------------------------
+   Design tokens
+   One place to change the visual identity of the entire site.
+------------------------------------------------------------------- */
+
+:root {
+  /* Surface + type palette (mirrors tailwind.config.ts) */
+  --ink: #0a0b0d;
+  --ink-950: #07080a;
+  --ink-900: #0a0b0d;
+  --ink-850: #0d0f12;
+  --ink-800: #111316;
+  --ink-700: #171a1e;
+  --ink-600: #1f2328;
+
+  --bone: #f2efe9;
+  --bone-dim: #b9b6b0;
+  --bone-mute: #8b8983;
+  --bone-faint: #7d7b76;
+
+  --signal: #4f9dff;
+  --signal-soft: #8abbff;
+  --signal-deep: #1d6fe0;
+
+  --hairline: rgba(242, 239, 233, 0.09);
+  --hairline-strong: rgba(242, 239, 233, 0.16);
+
+  --shell: 84rem;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* ---- Type scale -------------------------------------------------
+     Optical sizing: the larger the type, the tighter the tracking and
+     the lighter the apparent weight. These four roles cover the whole
+     site so section headings can never drift apart again. */
+  --text-display: clamp(3.25rem, 8.6vw, 8rem);
+  --text-section: clamp(1.95rem, 3.9vw, 3.15rem);
+  --text-statement: clamp(1.5rem, 2.7vw, 2.15rem);
+  --text-card: clamp(1.05rem, 1.5vw, 1.2rem);
+
+  --track-display: -0.042em;
+  --track-section: -0.032em;
+  --track-statement: -0.024em;
+  --track-card: -0.012em;
+
+  --leading-display: 0.88;
+  --leading-section: 1.02;
+  --leading-body: 1.72;
+
+  /* ---- Vertical rhythm -------------------------------------------
+     Sections alternate between two densities so scrolling has a pulse
+     instead of a metronome. */
+  --space-section-lg: clamp(5.5rem, 9vw, 9rem);
+  --space-section-md: clamp(4.5rem, 6.5vw, 6.5rem);
+
+  color-scheme: dark;
+}
+
+* {
+  border-color: var(--hairline);
+}
+
+html {
+  overflow-x: clip;
+  scroll-behavior: smooth;
+  /* Sticky nav clearance for anchor jumps (single source of truth) */
+  scroll-padding-top: 7.5rem;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--ink);
+  color: var(--bone);
+  font-feature-settings: "ss01" on, "cv01" on;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: rgba(79, 157, 255, 0.28);
+  color: #fff;
+}
+
+/* Focus rings: visible for keyboard users, quiet for mouse users */
+:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Code: keep character fidelity (no ligatures collapsing === into ≡) */
+pre, code, kbd, samp {
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "calt" 0;
+}
+
+/* Slim, tonal scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--ink-950);
+}
+::-webkit-scrollbar-thumb {
+  background: #2a2e34;
+  border-radius: 999px;
+  border: 2px solid var(--ink-950);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3a3f47;
+}
+
+/* ------------------------------------------------------------------
+   Utilities
+------------------------------------------------------------------- */
+
+.shell {
+  width: 100%;
+  max-width: var(--shell);
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+@media (min-width: 768px) {
+  .shell {
+    padding-inline: 2.5rem;
+  }
+}
+
+.label {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--bone-mute);
+}
+
+.hairline {
+  border-top: 1px solid var(--hairline);
+}
+
+/* Fine engineering grid, masked so it fades toward the edges.
+   Two interleaved lattices: a fine 24px rule at very low contrast for
+   texture, and a 72px major rule for structure. The major lines read as
+   the "engineering" grid; the fine ones only register as depth. */
+.grid-field {
+  contain: paint;
+  background-image:
+    linear-gradient(to right, rgba(242, 239, 233, 0.014) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(242, 239, 233, 0.014) 1px, transparent 1px),
+    linear-gradient(to right, rgba(242, 239, 233, 0.038) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(242, 239, 233, 0.038) 1px, transparent 1px);
+  background-size:
+    24px 24px,
+    24px 24px,
+    72px 72px,
+    72px 72px;
+  -webkit-mask-image: radial-gradient(ellipse 88% 68% at 50% 0%, #000 26%, transparent 76%);
+  mask-image: radial-gradient(ellipse 88% 68% at 50% 0%, #000 26%, transparent 76%);
+}
+
+/* Continuous page lattice, painted inside the light stack so the cursor
+   glow can illuminate it. Fades out toward the foot of the page. */
+.ambient-light__lattice {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(242, 239, 233, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(242, 239, 233, 0.03) 1px, transparent 1px);
+  background-size: 72px 72px;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 46%, transparent 88%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 46%, transparent 88%);
+}
+
+/* Single restrained light source behind the hero */
+.hero-light {
+  contain: paint;
+  background:
+    radial-gradient(52rem 30rem at 50% -12%, rgba(79, 157, 255, 0.16), transparent 62%),
+    radial-gradient(30rem 22rem at 82% 8%, rgba(79, 157, 255, 0.07), transparent 70%);
+}
+
+@layer base {
+  /* Preflight resets heading weight to `inherit`. Type roles outside a
+     layer would beat every utility, so they live in `components` — which
+     means weight has to be restored at the base layer to win over that
+     reset. One declaration, no !important. */
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 500;
+  }
+}
+
+@layer components {
+/* ------------------------------------------------------------------
+   Typography roles
+   Every heading on the site resolves to one of these, so weight,
+   tracking and leading stay optically consistent.
+------------------------------------------------------------------- */
+
+.type-display {
+  font-size: var(--text-display);
+  line-height: var(--leading-display);
+  letter-spacing: var(--track-display);
+  font-weight: 500;
+}
+
+.type-section {
+  font-size: var(--text-section);
+  line-height: var(--leading-section);
+  letter-spacing: var(--track-section);
+  font-weight: 500;
+}
+
+.type-statement {
+  font-size: var(--text-statement);
+  line-height: 1.22;
+  letter-spacing: var(--track-statement);
+  font-weight: 500;
+}
+
+.type-card {
+  font-size: var(--text-card);
+  line-height: 1.3;
+  letter-spacing: var(--track-card);
+  font-weight: 500;
+}
+
+/* Body copy: slightly larger than the metadata around it, with generous
+   leading, so the contrast with labels does the hierarchy work. */
+.type-body {
+  font-size: 0.9375rem;
+  line-height: var(--leading-body);
+  letter-spacing: 0.002em;
+  color: var(--bone-mute);
+}
+
+@media (min-width: 768px) {
+  .type-body {
+    font-size: 0.9688rem;
+  }
+}
+
+/* Metadata: mono, small, tracked — the counterweight to large headings. */
+.type-meta {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--bone-faint);
+}
+}
+
+/* Vertical rhythm helpers used by every section wrapper. */
+.section-lg {
+  padding-block: var(--space-section-lg);
+}
+.section-md {
+  padding-block: var(--space-section-md);
+}
+
+/* Serif italic accent — the editorial voice of the site */
+.accent-serif {
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+.text-pretty {
+  text-wrap: pretty;
+}
+
+/* Subtle lift used by cards and buttons */
+.lift {
+  transition:
+    transform 0.55s var(--ease),
+    border-color 0.4s var(--ease),
+    background-color 0.4s var(--ease);
+  will-change: transform;
+}
+.lift:hover {
+  transform: translateY(-3px);
+}
+
+/* Sheen that traces a border on hover (no glassmorphism, just light) */
+.edge-glow {
+  position: relative;
+}
+.edge-glow::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    140deg,
+    rgba(79, 157, 255, 0.5),
+    rgba(79, 157, 255, 0.04) 38%,
+    transparent 60%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.5s var(--ease);
+  pointer-events: none;
+}
+.edge-glow:hover::after,
+.edge-glow:focus-within::after {
+  opacity: 1;
+}
+
+/* Underline that draws in from the left */
+.link-underline {
+  position: relative;
+}
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  height: 1px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s var(--ease);
+}
+.link-underline:hover::after,
+.link-underline:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* ------------------------------------------------------------------
+   INTERACTIVE AMBIENT LIGHT
+   A fixed, decorative stack that lives above the page background and
+   below all content (z-index 0 vs. 1 for header/main/footer).
+   Three layers compose the effect:
+     1. __field — wide, very soft ambient bloom (radius set per viewport)
+     2. __core  — brighter, tighter pool right under the cursor
+     3. __grid  — the page's own grid, reproduced in signal blue and
+                  masked to the glow so lines "light up" as it passes
+   Only --glow-x / --glow-y / opacity are animated, from a single
+   rAF loop in components/ui/cursor-glow.tsx. Nothing else repaints.
+------------------------------------------------------------------- */
+
+.ambient-light {
+  --glow-x: 50vw;
+  --glow-y: 34vh;
+  /* Primary radius follows the smaller viewport axis so the pool keeps a
+     pleasant shape from 1024px laptops up to ultrawide displays. */
+  --glow-r: clamp(320px, 46vmin, 720px);
+
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  will-change: opacity;
+  transition: opacity 700ms var(--ease);
+}
+
+.ambient-light__field,
+.ambient-light__core,
+.ambient-light__grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* 1 — wide ambient spread: barely-there light that fills the room.
+       Painted as one full-viewport gradient (not a tiled background) so it
+       has no tile edge to reveal — the falloff is smooth in every
+       direction, all the way into the page background. */
+.ambient-light__field {
+  --field-r: calc(var(--glow-r) * 2.1);
+  background: radial-gradient(
+    ellipse var(--field-r) var(--field-r) at var(--glow-x) var(--glow-y),
+    rgba(79, 157, 255, 0.1) 0%,
+    rgba(79, 157, 255, 0.07) 24%,
+    rgba(79, 157, 255, 0.038) 48%,
+    rgba(79, 157, 255, 0.014) 68%,
+    transparent 84%
+  );
+}
+
+/* 2 — brighter pool at the centre, still restrained */
+.ambient-light__core {
+  background: radial-gradient(
+    circle at center,
+    rgba(138, 187, 255, 0.11) 0%,
+    rgba(79, 157, 255, 0.075) 34%,
+    rgba(79, 157, 255, 0.03) 62%,
+    transparent 82%
+  );
+  width: calc(var(--glow-r) * 1.5);
+  height: calc(var(--glow-r) * 1.5);
+  inset: auto;
+  left: 0;
+  top: 0;
+  transform: translate3d(
+    calc(var(--glow-x) - var(--glow-r) * 0.75),
+    calc(var(--glow-y) - var(--glow-r) * 0.75),
+    0
+  );
+  will-change: transform;
+}
+
+/* 3 — illuminated grid: same lattice + rhythm as .grid-field, masked so
+       only the area near the light reveals it.
+       NOTE: a radial-gradient with a single length ("circle 600px at …")
+       is invalid CSS and makes the whole mask fail open, so the radius
+       lives in a custom property consumed as an explicit ellipse size. */
+.ambient-light__grid {
+  --grid-r: var(--glow-r);
+  background-image:
+    linear-gradient(to right, rgba(96, 168, 255, 0.55) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(96, 168, 255, 0.55) 1px, transparent 1px);
+  background-size: 72px 72px;
+  -webkit-mask-image: radial-gradient(
+    ellipse var(--grid-r) var(--grid-r) at var(--glow-x) var(--glow-y),
+    rgba(0, 0, 0, 0.9) 0%,
+    rgba(0, 0, 0, 0.6) 32%,
+    rgba(0, 0, 0, 0.22) 55%,
+    transparent 74%
+  );
+  mask-image: radial-gradient(
+    ellipse var(--grid-r) var(--grid-r) at var(--glow-x) var(--glow-y),
+    rgba(0, 0, 0, 0.9) 0%,
+    rgba(0, 0, 0, 0.6) 32%,
+    rgba(0, 0, 0, 0.22) 55%,
+    transparent 74%
+  );
+}
+
+/* Touch / reduced-motion mode: a single calm pool, no tracking. The pointer
+   layer is switched off so the static light is never doubled up. */
+.ambient-light[data-mode="static"] {
+  --glow-x: 50vw;
+  --glow-y: 26vh;
+  --glow-r: clamp(340px, 78vmin, 620px);
+}
+.ambient-light[data-mode="static"] .ambient-light__field {
+  opacity: 0.62;
+}
+.ambient-light[data-mode="static"] .ambient-light__core {
+  opacity: 0.5;
+}
+.ambient-light[data-mode="static"] .ambient-light__grid {
+  opacity: 0.3;
+}
+
+/* On narrow screens keep the glow lower-key so it never fights the text. */
+@media (max-width: 640px) {
+  .ambient-light {
+    --glow-r: clamp(260px, 62vmin, 420px);
+  }
+  .ambient-light__field,
+  .ambient-light__core {
+    opacity: 0.78;
+  }
+}
+
+/* Header, main and footer paint the page surface above the light layer. */
+#main-content,
+body > footer {
+  position: relative;
+  z-index: 1;
+}
+
+/* Per-section lighting. Alternating a very shallow warm/blue wash keeps the
+   scroll from reading as one flat plane without introducing hard edges. */
+.lit-quiet {
+  background-image: radial-gradient(
+    120% 70% at 50% 0%,
+    rgba(79, 157, 255, 0.022),
+    transparent 62%
+  );
+}
+
+.lit-warm {
+  background-image: radial-gradient(
+    100% 60% at 18% 12%,
+    rgba(138, 187, 255, 0.018),
+    transparent 58%
+  );
+}
+
+/* A faint horizontal glow line that marks a section boundary without a
+   full-width rule. */
+.edge-line {
+  position: relative;
+}
+.edge-line::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: min(28rem, 60%);
+  height: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(79, 157, 255, 0.3),
+    transparent
+  );
+}
+
+
+/* ------------------------------------------------------------------
+   Hero architecture stack
+   A CSS-only exploded isometric view: three planes on one 3D stage.
+   No images, no canvas, no randomised values — the transform strings are
+   static, so there is nothing for the server and client to disagree on.
+------------------------------------------------------------------- */
+
+.hero-stack {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 27rem;
+  margin-inline: auto;
+}
+
+/* Soft pool of light the stack appears to rest in */
+.hero-stack__glow {
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  width: 118%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    circle at center,
+    rgba(79, 157, 255, 0.16) 0%,
+    rgba(79, 157, 255, 0.07) 34%,
+    transparent 66%
+  );
+  filter: blur(6px);
+  pointer-events: none;
+}
+
+.hero-stack__scene {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 0.92;
+  perspective: 1100px;
+  perspective-origin: 50% 42%;
+}
+
+.hero-stack__group {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform: rotateX(54deg) rotateZ(45deg) scale(0.92);
+  animation: stack-breathe 14s ease-in-out infinite;
+  will-change: transform;
+}
+
+.hero-stack__group[data-static="true"] {
+  animation: none;
+}
+
+.hero-stack__layer {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  transform-style: preserve-3d;
+  animation: stack-plane-in 1.1s var(--ease) both;
+}
+
+.hero-stack__plane {
+  position: relative;
+  width: 62%;
+  aspect-ratio: 1;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(139, 187, 255, 0.22);
+  background:
+    linear-gradient(150deg, rgba(79, 157, 255, 0.1), rgba(79, 157, 255, 0.02) 60%),
+    rgba(13, 15, 18, 0.86);
+  box-shadow:
+    inset 0 1px 0 rgba(242, 239, 233, 0.08),
+    0 0 30px -8px rgba(79, 157, 255, 0.28);
+  backdrop-filter: blur(2px);
+  overflow: hidden;
+}
+
+/* The bottom plane is the darkest and least defined */
+.hero-stack__plane--data {
+  border-color: rgba(139, 187, 255, 0.12);
+  background:
+    linear-gradient(150deg, rgba(79, 157, 255, 0.05), transparent 60%),
+    rgba(10, 11, 13, 0.9);
+  box-shadow: inset 0 1px 0 rgba(242, 239, 233, 0.04);
+}
+
+.hero-stack__plane--logic {
+  border-color: rgba(139, 187, 255, 0.17);
+}
+
+/* Fine lattice inside every plane */
+.hero-stack__lattice {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(139, 187, 255, 0.09) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(139, 187, 255, 0.09) 1px, transparent 1px);
+  background-size: 22px 22px;
+  mask-image: radial-gradient(ellipse at center, #000 30%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 78%);
+}
+
+/* Nodes + connecting edges on the interface plane */
+.hero-stack__node {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--signal-soft);
+  box-shadow: 0 0 0 3px rgba(79, 157, 255, 0.15), 0 0 12px rgba(79, 157, 255, 0.8);
+  animation: node-pulse 4.5s ease-in-out infinite;
+}
+.hero-stack__node--a { left: 22%; top: 30%; animation-delay: 0s; }
+.hero-stack__node--b { left: 62%; top: 26%; animation-delay: 1.1s; }
+.hero-stack__node--c { left: 44%; top: 66%; animation-delay: 2.2s; }
+
+.hero-stack__edge {
+  position: absolute;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    rgba(79, 157, 255, 0.55),
+    rgba(79, 157, 255, 0.1)
+  );
+  transform-origin: left center;
+}
+.hero-stack__edge--ab {
+  left: 22%;
+  top: 30%;
+  width: 41%;
+  transform: rotate(-5deg);
+}
+.hero-stack__edge--bc {
+  left: 44%;
+  top: 66%;
+  width: 21%;
+  transform: rotate(-62deg);
+}
+
+/* Dashed vertical rails show the layers are one system */
+.hero-stack__rail {
+  position: absolute;
+  left: 50%;
+  top: 12%;
+  width: 1px;
+  height: 78%;
+  background-image: linear-gradient(
+    to bottom,
+    rgba(139, 187, 255, 0.35) 0 4px,
+    transparent 4px 9px
+  );
+  background-size: 1px 9px;
+  transform: translateX(-50%) rotateX(-90deg);
+  transform-origin: center;
+  transform-style: preserve-3d;
+}
+.hero-stack__rail--1 { left: 32%; height: 62%; top: 20%; }
+.hero-stack__rail--2 { left: 68%; height: 62%; top: 20%; }
+
+/* Loose plates that float outside the stack for depth */
+.hero-stack__chip {
+  position: absolute;
+  width: 3.2rem;
+  aspect-ratio: 1;
+  border-radius: 0.4rem;
+  border: 1px solid rgba(139, 187, 255, 0.2);
+  background: rgba(17, 19, 22, 0.7);
+  box-shadow: inset 0 1px 0 rgba(242, 239, 233, 0.06);
+}
+.hero-stack__chip--1 {
+  right: 4%;
+  top: 12%;
+  transform: translateZ(70px);
+  animation: chip-float 11s ease-in-out infinite;
+}
+.hero-stack__chip--2 {
+  left: 2%;
+  bottom: 16%;
+  width: 2.2rem;
+  transform: translateZ(30px);
+  animation: chip-float 13s ease-in-out infinite reverse;
+}
+
+/* Legend */
+.hero-stack__legend {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  border-top: 1px solid var(--hairline);
+  padding-top: 0.75rem;
+}
+
+.hero-stack__legend-row {
+  display: grid;
+  grid-template-columns: 0.5rem 1fr auto;
+  align-items: center;
+  gap: 0.625rem;
+  padding-block: 0.3rem;
+  animation: fade-up 0.7s var(--ease) both;
+}
+
+.hero-stack__dot {
+  width: 0.3rem;
+  height: 0.3rem;
+  border-radius: 50%;
+  border: 1px solid rgba(139, 187, 255, 0.45);
+  background: transparent;
+}
+.hero-stack__dot--on {
+  background: var(--signal);
+  border-color: var(--signal);
+  box-shadow: 0 0 8px rgba(79, 157, 255, 0.7);
+}
+
+.hero-stack__legend-label {
+  font-size: 0.75rem;
+  letter-spacing: -0.005em;
+  color: var(--bone-dim);
+}
+
+.hero-stack__legend-meta {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bone-faint);
+}
+
+@keyframes stack-breathe {
+  0%, 100% { transform: rotateX(54deg) rotateZ(45deg) scale(0.92); }
+  50%      { transform: rotateX(56.5deg) rotateZ(50deg) scale(0.935); }
+}
+
+@keyframes stack-plane-in {
+  from { opacity: 0; filter: blur(6px); }
+  to   { opacity: 1; filter: blur(0); }
+}
+
+@keyframes node-pulse {
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 1; }
+}
+
+@keyframes chip-float {
+  0%, 100% { translate: 0 0; }
+  50%      { translate: 0 -10px; }
+}
+
+/* Tablet: the layout is still stacked until the two-column breakpoint,
+   so the stage is capped to keep the run of empty space short. */
+@media (min-width: 641px) and (max-width: 1023px) {
+  .hero-stack {
+    max-width: 22rem;
+  }
+  .hero-stack__scene {
+    aspect-ratio: 1 / 0.78;
+  }
+}
+
+/* Narrow screens: shrink the stage so it never crowds the copy */
+@media (max-width: 640px) {
+  .hero-stack {
+    max-width: 20rem;
+    gap: 1.25rem;
+  }
+  .hero-stack__scene {
+    aspect-ratio: 1 / 0.85;
+  }
+  .hero-stack__plane {
+    width: 66%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-stack__group,
+  .hero-stack__layer,
+  .hero-stack__node,
+  .hero-stack__chip,
+  .hero-stack__legend-row {
+    animation: none !important;
+  }
+  .hero-stack__legend-row {
+    opacity: 1;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Surfaces & depth
+   Cards get three light cues — a top hairline highlight, a soft inner
+   shadow, and a pointer-tracked sheen — instead of a flat 1px border.
+------------------------------------------------------------------- */
+
+.surface {
+  position: relative;
+  border-radius: 1rem;
+  border: 1px solid var(--hairline);
+  background:
+    linear-gradient(180deg, rgba(242, 239, 233, 0.032) 0%, rgba(242, 239, 233, 0) 42%),
+    var(--ink-850);
+  box-shadow:
+    inset 0 1px 0 rgba(242, 239, 233, 0.05),
+    0 1px 2px rgba(0, 0, 0, 0.4),
+    0 12px 32px -24px rgba(0, 0, 0, 0.9);
+  transition:
+    border-color 0.5s var(--ease),
+    box-shadow 0.5s var(--ease),
+    background-color 0.5s var(--ease);
+}
+
+.surface:hover {
+  border-color: var(--hairline-strong);
+  box-shadow:
+    inset 0 1px 0 rgba(242, 239, 233, 0.07),
+    0 1px 2px rgba(0, 0, 0, 0.4),
+    0 20px 48px -28px rgba(0, 0, 0, 0.95);
+}
+
+/* Deeper surface for the hero and the featured project. */
+.surface-raised {
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(79, 157, 255, 0.06), transparent 60%),
+    linear-gradient(180deg, rgba(242, 239, 233, 0.04) 0%, rgba(242, 239, 233, 0) 38%),
+    var(--ink-850);
+  box-shadow:
+    inset 0 1px 0 rgba(242, 239, 233, 0.08),
+    0 40px 90px -50px rgba(0, 0, 0, 1),
+    0 0 0 1px rgba(0, 0, 0, 0.3);
+}
+
+/* Pointer tilt. Rotation is intentionally tiny; the sheen does the work. */
+.tilt-surface {
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  --mx: 50%;
+  --my: 50%;
+  position: relative;
+  transform-style: preserve-3d;
+  transform: perspective(1400px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  transition: transform 0.6s var(--ease);
+}
+
+.tilt-surface__inner {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+}
+
+.tilt-surface__glare {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.5s var(--ease);
+  background: radial-gradient(
+    34rem 22rem at var(--mx) var(--my),
+    rgba(139, 187, 255, 0.09),
+    transparent 62%
+  );
+}
+
+.tilt-surface:hover .tilt-surface__glare {
+  opacity: 1;
+}
+
+/* Section separator: a hairline that fades at both ends, plus a very
+   subtle top-edge light so sections read as stacked planes. */
+.section-divider {
+  border-top: 1px solid transparent;
+  background-image: linear-gradient(
+    to right,
+    transparent,
+    rgba(242, 239, 233, 0.11) 18%,
+    rgba(242, 239, 233, 0.11) 82%,
+    transparent
+  );
+  background-size: 100% 1px;
+  background-position: top;
+  background-repeat: no-repeat;
+}
+
+/* Small caps kicker used above display type. */
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--bone-mute);
+}
+
+.kicker::before {
+  content: "";
+  width: 1.75rem;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--signal));
+}
+
+/* Dotted connector used in the journey timeline */
+.timeline-dot {
+  box-shadow: 0 0 0 4px var(--ink), 0 0 0 5px var(--hairline-strong);
+}
+
+/* ------------------------------------------------------------------
+   Reduced motion: honour the OS preference everywhere
+------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  /* The ambient light is static in this mode; make it appear immediately. */
+  .ambient-light {
+    transition: none !important;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .lift:hover {
+    transform: none;
+  }
+  .tilt-surface {
+    transform: none !important;
+  }
+  .tilt-surface__glare {
+    display: none;
+  }
+}

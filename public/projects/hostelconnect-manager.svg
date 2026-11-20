@@ -1,0 +1,183 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900" role="img" aria-label="Reconstructed manager dashboard for HostelConnect">
+  <defs>
+    <linearGradient id="bgm" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d0f12"/><stop offset="1" stop-color="#07080a"/>
+    </linearGradient>
+    <linearGradient id="accentm" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#4f9dff"/><stop offset="1" stop-color="#8abbff"/>
+    </linearGradient>
+  </defs>
+  <rect width="1440" height="900" fill="url(#bgm)"/>
+  <g stroke="#8abbff" stroke-opacity="0.045">
+    <path d="M0 90h1440M0 240h1440M0 390h1440M0 540h1440M0 690h1440M0 840h1440"/>
+    <path d="M120 0v900M360 0v900M600 0v900M840 0v900M1080 0v900M1320 0v900"/>
+  </g>
+
+  <!-- top bar -->
+  <rect x="48" y="44" width="1344" height="66" rx="14" fill="#111316" stroke="#f2efe9" stroke-opacity="0.09"/>
+  <rect x="72" y="62" width="30" height="30" rx="8" fill="url(#accentm)" opacity="0.9"/>
+  <text x="118" y="83" font-family="system-ui,sans-serif" font-size="18" font-weight="600" fill="#f2efe9">HostelConnect</text>
+  <text x="118" y="97" font-family="monospace" font-size="8.5" fill="#7d7b76" letter-spacing="1.4">MANAGER WORKSPACE</text>
+  <rect x="1132" y="60" width="112" height="34" rx="17" fill="#4f9dff" fill-opacity="0.14" stroke="#4f9dff" stroke-opacity="0.35"/>
+  <text x="1188" y="82" font-family="monospace" font-size="11" fill="#8abbff" text-anchor="middle" letter-spacing="1">MANAGER</text>
+  <circle cx="1296" cy="77" r="17" fill="#1f2328" stroke="#f2efe9" stroke-opacity="0.12"/>
+  <text x="1296" y="82" font-family="monospace" font-size="11" fill="#b9b6b0" text-anchor="middle">AN</text>
+
+  <!-- page title -->
+  <text x="48" y="168" font-family="system-ui,sans-serif" font-size="26" font-weight="600" fill="#f2efe9">Urban Nest Residency</text>
+  <text x="48" y="192" font-family="system-ui,sans-serif" font-size="12.5" fill="#8b8983">Katraj, Pune · 24 beds across 9 rooms</text>
+
+  <!-- stat cards -->
+  <g>
+    <rect x="48" y="218" width="322" height="128" rx="14" fill="#111316" stroke="#f2efe9" stroke-opacity="0.09"/>
+    <text x="76" y="248" font-family="monospace" font-size="10" fill="#7d7b76" letter-spacing="1.4">OCCUPANCY</text>
+    <text x="76" y="292" font-family="monospace" font-size="30" font-weight="700" fill="#f2efe9">18<tspan font-size="15" fill="#7d7b76">/24</tspan></text>
+    <rect x="76" y="310" width="266" height="6" rx="3" fill="#f2efe9" fill-opacity="0.08"/>
+    <rect x="76" y="310" width="199" height="6" rx="3" fill="url(#accentm)"/>
+  </g>
+  <g>
+    <rect x="386" y="218" width="322" height="128" rx="14" fill="#111316" stroke="#f2efe9" stroke-opacity="0.09"/>
+    <text x="414" y="248" font-family="monospace" font-size="10" fill="#7d7b76" letter-spacing="1.4">PENDING REQUESTS</text>
+    <text x="414" y="292" font-family="monospace" font-size="30" font-weight="700" fill="#fbbf24">4</text>
+    <text x="414" y="318" font-family="system-ui,sans-serif" font-size="11.5" fill="#7d7b76">Awaiting your decision</text>
+  </g>
+  <g>
+    <rect x="724" y="218" width="322" height="128" rx="14" fill="#111316" stroke="#f2efe9" stroke-opacity="0.09"/>
+    <text x="752" y="248" font-family="monospace" font-size="10" fill="#7d7b76" letter-spacing="1.4">FREE BEDS</text>
+    <text x="752" y="292" font-family="monospace" font-size="30" font-weight="700" fill="#4ade80">6</text>
+    <text x="752" y="318" font-family="system-ui,sans-serif" font-size="11.5" fill="#7d7b76">Across 4 rooms</text>
+  </g>
+  <g>
+    <rect x="1062" y="218" width="330" height="128" rx="14" fill="#111316" stroke="#f2efe9" stroke-opacity="0.09"/>
+    <text x="1090" y="248" font-family="monospace" font-size="10" fill="#7d7b76" letter-spacing="1.4">EST. MONTHLY REVENUE</text>
+    <text x="1090" y="292" font-family="monospace" font-size="30" font-weight="700" fill="#8abbff">₹1,35,000</text>
+    <text x="1090" y="318" font-family="system-ui,sans-serif" font-size="11.5" fill="#7d7b76">Occupied beds × price</text>
+  </g>
+
+  <!-- requests table -->
+  <rect x="48" y="376" width="900" height="450" rx="16" fill="#0d0f12" stroke="#f2efe9" stroke-opacity="0.08"/>
+  <text x="76" y="410" font-family="monospace" font-size="10.5" fill="#7d7b76" letter-spacing="1.4">BOOKING REQUESTS</text>
+  <line x1="76" y1="430" x2="920" y2="430" stroke="#f2efe9" stroke-opacity="0.07"/>
+
+  <!-- header row -->
+  <g font-family="monospace" font-size="9.5" fill="#7d7b76" letter-spacing="1.1">
+    <text x="76" y="458">STUDENT</text>
+    <text x="360" y="458">ROOM</text>
+    <text x="500" y="458">BED</text>
+    <text x="620" y="458">REQUESTED</text>
+    <text x="756" y="458">ACTION</text>
+  </g>
+  <line x1="76" y1="474" x2="920" y2="474" stroke="#f2efe9" stroke-opacity="0.07"/>
+
+  <!-- row 1 -->
+  <g>
+    <circle cx="90" cy="512" r="14" fill="url(#accentm)" fill-opacity="0.16"/>
+    <text x="90" y="517" font-family="monospace" font-size="10" fill="#8abbff" text-anchor="middle">RS</text>
+    <text x="116" y="508" font-family="system-ui,sans-serif" font-size="12.5" fill="#f2efe9">Rohan S.</text>
+    <text x="116" y="524" font-family="system-ui,sans-serif" font-size="10.5" fill="#7d7b76">2 days ago</text>
+    <text x="360" y="517" font-family="monospace" font-size="11.5" fill="#b9b6b0">A-204</text>
+    <text x="500" y="517" font-family="monospace" font-size="11.5" fill="#b9b6b0">Bed 2</text>
+    <text x="620" y="517" font-family="monospace" font-size="11" fill="#8b8983">12 Nov</text>
+    <rect x="756" y="498" width="76" height="32" rx="16" fill="#10b981" fill-opacity="0.14" stroke="#10b981" stroke-opacity="0.35"/>
+    <text x="794" y="518" font-family="system-ui,sans-serif" font-size="11" font-weight="600" fill="#4ade80" text-anchor="middle">Approve</text>
+    <rect x="840" y="498" width="80" height="32" rx="16" fill="#f2efe9" fill-opacity="0.05" stroke="#f2efe9" stroke-opacity="0.12"/>
+    <text x="880" y="518" font-family="system-ui,sans-serif" font-size="11" fill="#b9b6b0" text-anchor="middle">Reject</text>
+  </g>
+  <line x1="76" y1="546" x2="920" y2="546" stroke="#f2efe9" stroke-opacity="0.06"/>
+
+  <!-- row 2 -->
+  <g>
+    <circle cx="90" cy="584" r="14" fill="#1f2328"/>
+    <text x="90" y="589" font-family="monospace" font-size="10" fill="#b9b6b0" text-anchor="middle">AK</text>
+    <text x="116" y="580" font-family="system-ui,sans-serif" font-size="12.5" fill="#f2efe9">Aditi K.</text>
+    <text x="116" y="596" font-family="system-ui,sans-serif" font-size="10.5" fill="#7d7b76">3 days ago</text>
+    <text x="360" y="589" font-family="monospace" font-size="11.5" fill="#b9b6b0">B-101</text>
+    <text x="500" y="589" font-family="monospace" font-size="11.5" fill="#b9b6b0">Bed 1</text>
+    <text x="620" y="589" font-family="monospace" font-size="11" fill="#8b8983">11 Nov</text>
+    <rect x="756" y="570" width="76" height="32" rx="16" fill="#10b981" fill-opacity="0.14" stroke="#10b981" stroke-opacity="0.35"/>
+    <text x="794" y="590" font-family="system-ui,sans-serif" font-size="11" font-weight="600" fill="#4ade80" text-anchor="middle">Approve</text>
+    <rect x="840" y="570" width="80" height="32" rx="16" fill="#f2efe9" fill-opacity="0.05" stroke="#f2efe9" stroke-opacity="0.12"/>
+    <text x="880" y="590" font-family="system-ui,sans-serif" font-size="11" fill="#b9b6b0" text-anchor="middle">Reject</text>
+  </g>
+  <line x1="76" y1="618" x2="920" y2="618" stroke="#f2efe9" stroke-opacity="0.06"/>
+
+  <!-- row 3 -->
+  <g>
+    <circle cx="90" cy="656" r="14" fill="#1f2328"/>
+    <text x="90" y="661" font-family="monospace" font-size="10" fill="#b9b6b0" text-anchor="middle">SP</text>
+    <text x="116" y="652" font-family="system-ui,sans-serif" font-size="12.5" fill="#f2efe9">Sameer P.</text>
+    <text x="116" y="668" font-family="system-ui,sans-serif" font-size="10.5" fill="#7d7b76">4 days ago</text>
+    <text x="360" y="661" font-family="monospace" font-size="11.5" fill="#b9b6b0">A-204</text>
+    <text x="500" y="661" font-family="monospace" font-size="11.5" fill="#b9b6b0">Bed 1</text>
+    <text x="620" y="661" font-family="monospace" font-size="11" fill="#8b8983">10 Nov</text>
+    <rect x="756" y="642" width="76" height="32" rx="16" fill="#10b981" fill-opacity="0.14" stroke="#10b981" stroke-opacity="0.35"/>
+    <text x="794" y="662" font-family="system-ui,sans-serif" font-size="11" font-weight="600" fill="#4ade80" text-anchor="middle">Approve</text>
+    <rect x="840" y="642" width="80" height="32" rx="16" fill="#f2efe9" fill-opacity="0.05" stroke="#f2efe9" stroke-opacity="0.12"/>
+    <text x="880" y="662" font-family="system-ui,sans-serif" font-size="11" fill="#b9b6b0" text-anchor="middle">Reject</text>
+  </g>
+  <line x1="76" y1="690" x2="920" y2="690" stroke="#f2efe9" stroke-opacity="0.06"/>
+
+  <!-- row 4 -->
+  <g>
+    <circle cx="90" cy="728" r="14" fill="#1f2328"/>
+    <text x="90" y="733" font-family="monospace" font-size="10" fill="#b9b6b0" text-anchor="middle">NJ</text>
+    <text x="116" y="724" font-family="system-ui,sans-serif" font-size="12.5" fill="#f2efe9">Neha J.</text>
+    <text x="116" y="740" font-family="system-ui,sans-serif" font-size="10.5" fill="#7d7b76">5 days ago</text>
+    <text x="360" y="733" font-family="monospace" font-size="11.5" fill="#b9b6b0">C-302</text>
+    <text x="500" y="733" font-family="monospace" font-size="11.5" fill="#b9b6b0">Bed 3</text>
+    <text x="620" y="733" font-family="monospace" font-size="11" fill="#8b8983">09 Nov</text>
+    <rect x="756" y="714" width="76" height="32" rx="16" fill="#10b981" fill-opacity="0.14" stroke="#10b981" stroke-opacity="0.35"/>
+    <text x="794" y="734" font-family="system-ui,sans-serif" font-size="11" font-weight="600" fill="#4ade80" text-anchor="middle">Approve</text>
+    <rect x="840" y="714" width="80" height="32" rx="16" fill="#f2efe9" fill-opacity="0.05" stroke="#f2efe9" stroke-opacity="0.12"/>
+    <text x="880" y="734" font-family="system-ui,sans-serif" font-size="11" fill="#b9b6b0" text-anchor="middle">Reject</text>
+  </g>
+  <text x="76" y="800" font-family="monospace" font-size="10" fill="#7d7b76" letter-spacing="1.1">SHOWING 4 OF 4 PENDING</text>
+
+  <!-- bed inventory panel -->
+  <rect x="972" y="376" width="420" height="450" rx="16" fill="#0d0f12" stroke="#f2efe9" stroke-opacity="0.08"/>
+  <text x="1000" y="410" font-family="monospace" font-size="10.5" fill="#7d7b76" letter-spacing="1.4">BED INVENTORY</text>
+  <line x1="1000" y1="430" x2="1364" y2="430" stroke="#f2efe9" stroke-opacity="0.07"/>
+
+  <g font-family="monospace" font-size="10.5">
+    <text x="1000" y="464" fill="#b9b6b0">A-204</text>
+    <text x="1120" y="464" fill="#7d7b76">4 beds</text>
+    <rect x="1236" y="452" width="128" height="20" rx="10" fill="#10b981" fill-opacity="0.1"/>
+    <text x="1300" y="466" font-family="system-ui,sans-serif" font-size="10" fill="#4ade80" text-anchor="middle">1 free</text>
+  </g>
+  <line x1="1000" y1="486" x2="1364" y2="486" stroke="#f2efe9" stroke-opacity="0.06"/>
+
+  <g font-family="monospace" font-size="10.5">
+    <text x="1000" y="520" fill="#b9b6b0">B-101</text>
+    <text x="1120" y="520" fill="#7d7b76">3 beds</text>
+    <rect x="1236" y="508" width="128" height="20" rx="10" fill="#10b981" fill-opacity="0.1"/>
+    <text x="1300" y="522" font-family="system-ui,sans-serif" font-size="10" fill="#4ade80" text-anchor="middle">2 free</text>
+  </g>
+  <line x1="1000" y1="542" x2="1364" y2="542" stroke="#f2efe9" stroke-opacity="0.06"/>
+
+  <g font-family="monospace" font-size="10.5">
+    <text x="1000" y="576" fill="#b9b6b0">C-302</text>
+    <text x="1120" y="576" fill="#7d7b76">3 beds</text>
+    <rect x="1236" y="564" width="128" height="20" rx="10" fill="#10b981" fill-opacity="0.1"/>
+    <text x="1300" y="578" font-family="system-ui,sans-serif" font-size="10" fill="#4ade80" text-anchor="middle">3 free</text>
+  </g>
+  <line x1="1000" y1="598" x2="1364" y2="598" stroke="#f2efe9" stroke-opacity="0.06"/>
+
+  <g font-family="monospace" font-size="10.5">
+    <text x="1000" y="632" fill="#b9b6b0">D-401</text>
+    <text x="1120" y="632" fill="#7d7b76">4 beds</text>
+    <rect x="1236" y="620" width="128" height="20" rx="10" fill="#f43f5e" fill-opacity="0.08"/>
+    <text x="1300" y="634" font-family="system-ui,sans-serif" font-size="10" fill="#fb7185" text-anchor="middle">full</text>
+  </g>
+  <line x1="1000" y1="654" x2="1364" y2="654" stroke="#f2efe9" stroke-opacity="0.06"/>
+
+  <g font-family="monospace" font-size="10.5">
+    <text x="1000" y="688" fill="#b9b6b0">E-505</text>
+    <text x="1120" y="688" fill="#7d7b76">2 beds</text>
+    <rect x="1236" y="676" width="128" height="20" rx="10" fill="#f43f5e" fill-opacity="0.08"/>
+    <text x="1300" y="690" font-family="system-ui,sans-serif" font-size="10" fill="#fb7185" text-anchor="middle">full</text>
+  </g>
+
+  <line x1="1000" y1="712" x2="1364" y2="712" stroke="#f2efe9" stroke-opacity="0.07"/>
+  <text x="1000" y="744" font-family="system-ui,sans-serif" font-size="11" fill="#7d7b76">Approving a request assigns the bed and decrements the free count.</text>
+  <text x="1000" y="792" font-family="monospace" font-size="10" fill="#7d7b76" letter-spacing="1.2">RECONSTRUCTED UI</text>
+</svg>
